@@ -1,4 +1,4 @@
-#include "libs.h"
+#include "Game.h"
 
 
 void updateInput(GLFWwindow* window, Mesh &mesh)
@@ -42,28 +42,21 @@ void updateInput(GLFWwindow* window, Mesh &mesh)
 
 }
 
+GLFWwindow* createWindow(const char* title, const int width, const int height, int &fbWidth, int &fbHeight, const int glMajorVersion, const int glMinorVersion)
+{
 
+}
 
 int main()
 {
 	glfwInit();
 
-	const int WIDTH = 640;
-	const int HEIGHT = 480;
-	int framebufferWidth = 0;
-	int framebufferHeight = 0;
+	const int glMajorVersion = 4;
+	const int glMinorVersion = 5;
 
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "MessAgain", NULL, NULL);
-
-	glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
-	glViewport(0, 0, framebufferWidth, framebufferHeight);
-	glfwMakeContextCurrent(window);
-
+	Game game();
+	
+	
 	glewExperimental = GL_TRUE;
 
 	if (glewInit() != GLEW_OK) 
@@ -90,7 +83,7 @@ int main()
 
 	//Texture0
 	Texture texture0("images/cat.png", GL_TEXTURE_2D, 0);
-	Texture texture1("images/fish.png", GL_TEXTURE_2D,0);
+	Texture texture1("images/fish.png", GL_TEXTURE_2D,1);
 
 
 	//Shaders
