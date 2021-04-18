@@ -6,7 +6,6 @@
 #include <vec4.hpp>
 #include <mat4x4.hpp>
 #include <gtc/type_ptr.hpp>
-#include "Consts.h"
 
 class Shader
 {
@@ -36,9 +35,6 @@ private:
 		{
 			std::cout << "ERROR::SHADER::COULD_NOT_OPEN_VERTEX_FILE: " << fimeName << "\n";
 		}
-
-		std::string versStr ="#version " + std::to_string(Consts::glVersionMajor) + std::to_string(Consts::glVersionMinor) + "0";
-		src.replace(src.find("#version"), 12, ("#version " + versStr));
 		
 		in_file.close();
 

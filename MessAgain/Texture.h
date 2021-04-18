@@ -14,14 +14,12 @@ private:
 	int width;
 	int height;
 	unsigned int type;
-	GLint textureUnit;
 
 public:
 
-	Texture(const char* fileName, GLenum type, GLint textureUnit)
+	Texture(const char* fileName, GLenum type)
 	{
 		this->type = type;
-		this->textureUnit = textureUnit;
 		
 		loadFromFile(fileName);
 	}
@@ -31,9 +29,9 @@ public:
 	}
 
 	GLuint getID() const {return this->id;}
-	void bind()
+	void bind(const GLuint textureUnit)
 	{
-		glActiveTexture(GL_TEXTURE0 + this->textureUnit);
+		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(this->type, this->id);
 	}
 	void unbind()
@@ -41,8 +39,6 @@ public:
 		glActiveTexture(0);
 		glBindTexture(this->type, 0);
 	}
-	GLint getTextureUnit() { return this->textureUnit; }
-
 	void loadFromFile(const char* fileName)
 	{
 		if(this->id)

@@ -5,6 +5,7 @@ struct Material
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
 	sampler2D diffuseTex;
 	sampler2D specularTex;
 };
@@ -39,7 +40,7 @@ vec3 calculateSpecular(Material material, vec3 vs_position, vec3 vs_normal, vec3
 	vec3 reflectDirVec = normalize(reflect(lightToPosDirVec, normalize(vs_normal)));
 	vec3 posToViewVec = normalize(cameraPos - vs_position);
 	float specConst = pow(max(dot(posToViewVec, reflectDirVec), 0), 30);
-	return material.specular * specConst;
+	return material.specular * specConst * texture(material.specularTex, vs_texcoord).rgb;
 }
 
 void main()
