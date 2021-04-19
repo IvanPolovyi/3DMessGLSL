@@ -159,6 +159,7 @@
     <ClCompile Include="MessAgain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="libs.h" />
     <ClInclude Include="Material.h" />

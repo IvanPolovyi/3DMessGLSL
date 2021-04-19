@@ -27,8 +27,8 @@ class Game
 private:
 	GLFWwindow* window;
 	char* title;
-	const int WIDTH = 640;
-	const int HEIGHT = 480;
+	const int WIDTH = 1280;
+	const int HEIGHT = 720;
 	int framebufferWidth = WIDTH;
 	int framebufferHeight = HEIGHT;
 
@@ -56,6 +56,8 @@ private:
 	float nearPlane;
 	float farPlane;
 
+	Camera camera;
+	
 	//Shaders
 	std::vector<Shader*> shaders;
 	

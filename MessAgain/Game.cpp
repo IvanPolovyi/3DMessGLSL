@@ -18,9 +18,11 @@ void Game::initWindow()
 	glfwGetFramebufferSize(this->window, &framebufferWidth, &framebufferHeight);
 	glViewport(0, 0, framebufferWidth, framebufferHeight);
 	glfwMakeContextCurrent(this->window);
+	glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // puts cursor inside window
+
 }
 
-Game::Game(char* title)
+Game::Game(char* title) : camera(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f))
 {
 	this->window = nullptr;
 	this->title = title;
@@ -34,6 +36,7 @@ Game::Game(char* title)
 	this->farPlane = 1000.f;
 	this->ProjectionMatrix = glm::mat4(1.f);
 
+	
 	this->initGLFW();
 	this->initWindow();
 	this->iniGLEW();
@@ -94,18 +97,19 @@ void Game::iniGLEW()
 
 void Game::initOpenGLOptions()
 {
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+    // OPENGL OPTIONS
+    glEnable(GL_DEPTH_TEST); // allows us to use z coordinate, zoom away, etc
 
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+    glEnable(GL_CULL_FACE); // able to remove unecessary content
+    glCullFace(GL_BACK); // remove back of triangle or whatever
+    glFrontFace(GL_CCW); // front face is vertices that are going counter clockwise
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND); // allow blending of colors
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // ??????? 
+	glDepthFunc(GL_LEQUAL);
+    glPolygonMode(GL_FRONT, GL_FILL);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // Input
 }
 void Game::initMatrices()
 {
@@ -156,7 +160,7 @@ void Game::initMeshes()
 
 void Game::initLights()
 {
-	this->lights.push_back(new glm::vec3(0.f, 0.f, 1.f));
+	this->lights.push_back(new glm::vec3(2.f, 2.f, 2.f));
 
 }
 
@@ -166,21 +170,24 @@ void Game::initUniforms()
 	this->shaders[SHADER_CORE_PROGRAM]->setMat4fv(viewMatrix, "ViewMatrix");
 	this->shaders[SHADER_CORE_PROGRAM]->setMat4fv(ProjectionMatrix, "ProjectionMatrix");
 
+
+	
 	this->shaders[SHADER_CORE_PROGRAM]->setVec3f(*this->lights[0], "lightPos0");
-	this->shaders[SHADER_CORE_PROGRAM]->setVec3f(this->cameraPosition, "cameraPos");
+	
 }
 
 void Game::updateUniforms()
 {
-	this->viewMatrix = glm::lookAt(this->cameraPosition, this->cameraPosition + this->cameraFront, this->worldUp);
+	this->viewMatrix = this->camera.getViewMatrix();
 	 
 	this->shaders[SHADER_CORE_PROGRAM]->setMat4fv(this->viewMatrix, "ViewMatrix");
+	this->shaders[SHADER_CORE_PROGRAM]->setVec3f(this->camera.getPosition(), "cameraPos");
 }
 
 void Game::update()
 {
 	this->updateDt();
-	this->updateKeyboardInput();
+	this->updateInput();
 
 }
 void Game::render()
@@ -211,21 +218,25 @@ void Game::render()
 }
 void Game::updateKeyboardInput()
 {
+	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		setWindowShouldClose();
+	}
 	if (glfwGetKey(this->window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		this->cameraPosition.z -= .03f;
+		this->camera.move(this->dt, Camera::FORWARD);
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		this->cameraPosition.z += .03f;
+		this->camera.move(this->dt, Camera::BACKWARD);
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		this->cameraPosition.x -= .03f;
+		this->camera.move(this->dt, Camera::LEFT);
 	}
 	if (glfwGetKey(this->window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		this->cameraPosition.x += .03f;
+		this->camera.move(this->dt, Camera::RIGHT);
 	}
 	
 }
@@ -252,6 +263,7 @@ void Game::updateInput()
 	glfwPollEvents();
 	this->updateKeyboardInput();
 	this->updateMouseInput();
+	this->camera.updateInput(dt, -1, this->mouseOffsetX, this->mouseOffsetY);
 }
 
 void Game::updateDt()
