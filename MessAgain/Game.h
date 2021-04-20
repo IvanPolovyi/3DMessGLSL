@@ -72,6 +72,8 @@ private:
 
 	//lights
 	std::vector<glm::vec3*> lights;
+
+	std::vector<Model*> models;
 	
 	void initGLFW();
 	void initWindow();
@@ -84,6 +86,8 @@ private:
 	void initMaterials();
 	void initMeshes();
 	void initLights();
+	void initModels();
+	
 	void initUniforms();
 
 	void updateUniforms();

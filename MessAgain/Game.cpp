@@ -45,6 +45,7 @@ Game::Game(char* title) : camera(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 0.f, 1
 	this->initTextures();
 	this->initMaterials();
 	this->initMeshes();
+	this->initModels();
 	this->initLights();
 
 	this->initUniforms();
@@ -164,6 +165,11 @@ void Game::initLights()
 
 }
 
+void Game::initModels()
+{
+	this->models.push_back(new Model(glm::vec3(0.f), this->materials[MAT_1], this->textures[TEX_CONTAINER], this->textures[TEX_CONTAINER_SPECULAR], this->meshes));
+}
+
 void Game::initUniforms()
 {
 	
@@ -197,15 +203,18 @@ void Game::render()
 
 	this->updateUniforms();
 
-	this->materials[MAT_1]->sendToShader(*this->shaders[SHADER_CORE_PROGRAM]);
-	
-	this->shaders[SHADER_CORE_PROGRAM]->use();
-	
-	this->textures[TEX_CONTAINER]->bind(0);
-	this->textures[TEX_CONTAINER_SPECULAR]->bind(1);
+	//this->materials[MAT_1]->sendToShader(*this->shaders[SHADER_CORE_PROGRAM]);
+	//
+	//this->shaders[SHADER_CORE_PROGRAM]->use();
+	//
+	//this->textures[TEX_CONTAINER]->bind(0);
+	//this->textures[TEX_CONTAINER_SPECULAR]->bind(1);
 
-	this->meshes[MESH_QUAD]->render(this->shaders[SHADER_CORE_PROGRAM]);
-		
+	//this->meshes[MESH_QUAD]->render(this->shaders[SHADER_CORE_PROGRAM]);
+
+
+	this->models[0]->render(this->shaders[SHADER_CORE_PROGRAM]);
+	
 	//end draw
 	glfwSwapBuffers(window);
 	glFlush();

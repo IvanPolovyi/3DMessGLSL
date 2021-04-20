@@ -18,6 +18,6 @@
 #include <gtc/type_ptr.hpp>
 #include <SOIL2.h>
 
-#include "Mesh.h"
+#include "Model.h"
 #include "Camera.h"
 
